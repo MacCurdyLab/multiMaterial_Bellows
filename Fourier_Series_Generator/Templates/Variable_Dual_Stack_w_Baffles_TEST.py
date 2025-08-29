@@ -16,7 +16,7 @@ import pyvcad as pv
 # ----------------------
 
 # -- STL Files Location --
-stl_Location = "MAC_LAB/STL Files/DualWithBaffles/LOWRES"
+stl_Location = "../STL Files/DualWithBaffles/LOWRES"
 
 # -- Materials --
 materials = pv.MaterialDefs("configs/default.json")

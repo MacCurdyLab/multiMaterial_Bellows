@@ -38,7 +38,7 @@ z = 0
 fluidPercent = 0.725
 
 # STL Files Location
-stl_Location = "MAC_LAB/STL Files/DualNoBaffles"
+stl_Location = "../STL Files/DualNoBaffles"
 
 
 #-----------------------------------------------------

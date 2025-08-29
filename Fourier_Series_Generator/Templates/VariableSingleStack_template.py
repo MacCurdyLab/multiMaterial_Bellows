@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
+STL_Location = "../STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
 
 #-- Material definitions --
 materials = pv.MaterialDefs("configs/default.json")
