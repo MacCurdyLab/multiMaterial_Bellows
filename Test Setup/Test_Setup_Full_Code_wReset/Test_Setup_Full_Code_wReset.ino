@@ -127,7 +127,7 @@ void setup() {
     lcd.print("Please Connect Clock and Restart");
     while (1);
   }
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // run once, then comment
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // run once, then comment
 
   // SD
   if (!SD.begin(SD_CS)) {

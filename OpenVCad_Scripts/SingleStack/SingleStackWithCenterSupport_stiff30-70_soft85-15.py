@@ -19,13 +19,13 @@ yellow = materials.id("yellow")      # Air
 #-- Dimensions of part --
 mainHeight = 3.5   # Dr. Mac's: 3.5[mm]
 mainD = 25         # Dr. Mac's: 25[mm]
-capHeight = 1      #[mm]
+capHeight = 2      #[mm]
 
 #-- Stack Settings --
 fluidPercent = 0.725
 numStacks = 3
 includeBaffles = True
-fluidPercent = 0.725
+
 
 centerCollumn_Dia = 1.0 #[mm]
 centerCollumn_VeroPercent = 1
@@ -113,10 +113,11 @@ else:
 
 
 # -- Center Support Column -- 
-columnCenter_point = (capHeight + numStacks*mainHeight) / 2
+columnCenter_point = capHeight + numStacks*mainHeight/2
 CenterSupportColumn_temp = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,columnCenter_point),centerCollumn_Dia/2 ,numStacks*mainHeight)
 CenterSupportColumn = pv.FGrade([str(centerCollumn_AgilusPercent), str(centerCollumn_VeroPercent), str(centerCollumn_SupportPercent)],
                                 [red, blue,green], True)
+
 
 CenterSupportColumn.set_child(CenterSupportColumn_temp)
 
