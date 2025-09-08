@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-2mm"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
 
 #-- Material definitions --
 materials = pv.MaterialDefs("configs/default.json")
@@ -19,7 +19,7 @@ yellow = materials.id("yellow")      # Air
 #-- Dimensions of part --
 mainHeight = 3.5   # Dr. Mac's: 3.5[mm]
 mainD = 25         # Dr. Mac's: 25[mm]
-capHeight = 1      #[mm]
+capHeight = 2      #[mm]
 
 #-- Stack Settings --
 fluidPercent = 0.725
@@ -135,5 +135,8 @@ root.add_child(cap1fgrade)
 root.add_child(cap2_mesh)
 
 #-- Section View --
-#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,4),red)
-#root = pv.Difference(root,tempRect)
+#Bottom
+tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
+#Side
+tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+capHeight),pv.Vec3(50,25,20),red)
+root = pv.Difference(root,tempRect)

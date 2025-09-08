@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_1.5mmD"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/spaceForSupportCap_wALLtHICKNESS0-8"
 
 #-- Material definitions --
 materials = pv.MaterialDefs("configs/default.json")
@@ -25,12 +25,7 @@ capHeight = 2      #[mm]
 fluidPercent = 0.725
 numStacks = 3
 includeBaffles = True
-
-
-centerCollumn_Dia = 1.5 #[mm]
-centerCollumn_VeroPercent = 1
-centerCollumn_SupportPercent = 0
-centerCollumn_AgilusPercent = 1 - centerCollumn_SupportPercent - centerCollumn_VeroPercent
+fluidPercent = 0.725
 
 #-- placing stuff --
 x = 3.862658
@@ -111,19 +106,10 @@ if includeBaffles == True:
 else:
     fluidAir_fgrade.set_child(fluidNoHoles1_mesh)
 
+# -- Support Cap --
+supportCap_H = 0.3; #[mm]
+supportCap = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,capHeight+numStacks*mainHeight+supportCap_H/2),3.5/2,supportCap_H,green)
 
-# -- Center Support Column -- 
-columnCenter_point = capHeight + numStacks*mainHeight/2
-CenterSupportColumn_temp = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,columnCenter_point),centerCollumn_Dia/2 ,numStacks*mainHeight)
-CenterSupportColumn = pv.FGrade([str(centerCollumn_AgilusPercent), str(centerCollumn_VeroPercent), str(centerCollumn_SupportPercent)],
-                                [red, blue,green], True)
-
-
-CenterSupportColumn.set_child(CenterSupportColumn_temp)
-
-#Removing center part of the baffles "part"
-
-bafflesFgrade = pv.Difference(bafflesFgrade,CenterSupportColumn)
 
 #--------------------------------------------------------
 #-- Repeating each Bellows Assmbly for N Bellows Stack --
@@ -151,7 +137,7 @@ for i in range(numStacks-1):
 root.add_child(fullStackUnion)
 root.add_child(cap1fgrade)
 root.add_child(cap2_mesh)
-root.add_child(CenterSupportColumn)
+root.add_child(supportCap)
 
 #-- Section View --
 #Bottom

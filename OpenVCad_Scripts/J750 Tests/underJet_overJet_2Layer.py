@@ -69,5 +69,5 @@ for i in range(len(h2)):
     root.add_child(tempMesh)
 
 #-- Section View --
-#tempRect = pv.RectPrism(pv.Vec3(0,11,0),pv.Vec3(50,8,35),red)
-#root = pv.Difference(root,tempRect)
+tempRect = pv.RectPrism(pv.Vec3(0,11,0),pv.Vec3(50,8,35),red)
+root = pv.Difference(root,tempRect)
