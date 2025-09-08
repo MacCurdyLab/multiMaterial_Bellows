@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_1.0mmD"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_2.5mmD"
 
 #-- Material definitions --
 materials = pv.MaterialDefs("configs/default.json")
@@ -27,7 +27,7 @@ numStacks = 3
 includeBaffles = True
 
 
-centerCollumn_Dia = 1.0 #[mm]
+centerCollumn_Dia = 2.5 #[mm]
 centerCollumn_VeroPercent = 1
 centerCollumn_SupportPercent = 0
 centerCollumn_AgilusPercent = 1 - centerCollumn_SupportPercent - centerCollumn_VeroPercent
@@ -154,5 +154,5 @@ root.add_child(cap2_mesh)
 root.add_child(CenterSupportColumn)
 
 #-- Section View --
-#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,4),red)
+#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
 #root = pv.Difference(root,tempRect)
