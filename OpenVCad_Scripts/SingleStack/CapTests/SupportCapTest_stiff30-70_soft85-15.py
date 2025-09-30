@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/spaceForSupportCap_wALLtHICKNESS0-8"
 
 #-- Material definitions --
 materials = pv.default_materials()
@@ -106,6 +106,10 @@ if includeBaffles == True:
 else:
     fluidAir_fgrade.set_child(fluidNoHoles1_mesh)
 
+# -- Support Cap --
+supportCap_H = 0.6; #[mm]
+supportCap = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,capHeight+numStacks*mainHeight+supportCap_H/2-0.3),3.5/2,supportCap_H,green)
+
 
 #--------------------------------------------------------
 #-- Repeating each Bellows Assmbly for N Bellows Stack --
@@ -127,15 +131,17 @@ for i in range(numStacks-1):
     tempBellowsMesh = pv.Translate(0,0,mainHeight*(i+1),tempBellowsMesh)
     fullStackUnion.add_child(tempBellowsMesh)
 
+fullStackUnion = pv.Difference(fullStackUnion,supportCap)
+
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
-
 # Using a temporaty union before adding to root incase of multiprint
 singleStack_Union = pv.Union()
 singleStack_Union.add_child(fullStackUnion)
 singleStack_Union.add_child(cap1fgrade)
 singleStack_Union.add_child(cap2_mesh)
+singleStack_Union.add_child(supportCap)
 
 root.add_child(singleStack_Union)
 
@@ -149,8 +155,6 @@ if num_bellowsToPrint > 1:
     for i in range(num_bellowsToPrint-1):
         tempStack = pv.Translate(60,8,0,tempStack)
         root.add_child(tempStack)
-
-       
 
 #-- Section View --
 #Bottom

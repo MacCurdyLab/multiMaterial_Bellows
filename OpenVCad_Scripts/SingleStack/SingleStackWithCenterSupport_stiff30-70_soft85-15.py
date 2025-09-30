@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_1.5mmD"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_2.5mmD"
 
 #-- Material definitions --
 materials = pv.MaterialDefs("configs/default.json")
@@ -24,12 +24,13 @@ capHeight = 2      #[mm]
 #-- Stack Settings --
 fluidPercent = 0.725
 numStacks = 3
+num_bellowsToPrint = 4
 includeBaffles = True
 
 
-centerCollumn_Dia = 1.5 #[mm]
-centerCollumn_VeroPercent = 1
-centerCollumn_SupportPercent = 0
+centerCollumn_Dia = 2.5 #[mm]
+centerCollumn_VeroPercent = 0
+centerCollumn_SupportPercent = 1
 centerCollumn_AgilusPercent = 1 - centerCollumn_SupportPercent - centerCollumn_VeroPercent
 
 #-- placing stuff --
@@ -148,10 +149,25 @@ for i in range(numStacks-1):
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
-root.add_child(fullStackUnion)
-root.add_child(cap1fgrade)
-root.add_child(cap2_mesh)
-root.add_child(CenterSupportColumn)
+# Using a temporaty union before adding to root incase of multiprint
+singleStack_Union = pv.Union()
+singleStack_Union.add_child(fullStackUnion)
+singleStack_Union.add_child(cap1fgrade)
+singleStack_Union.add_child(cap2_mesh)
+singleStack_Union.add_child(CenterSupportColumn)
+
+root.add_child(singleStack_Union)
+
+#---------------------------
+#-- Translation for MultiPrint
+#--------------------------------
+
+#We want to do multiprint if num_bellowsToPrint > 1
+if num_bellowsToPrint > 1:
+    tempStack  = singleStack_Union
+    for i in range(num_bellowsToPrint-1):
+        tempStack = pv.Translate(60,8,0,tempStack)
+        root.add_child(tempStack)
 
 #-- Section View --
 #Bottom

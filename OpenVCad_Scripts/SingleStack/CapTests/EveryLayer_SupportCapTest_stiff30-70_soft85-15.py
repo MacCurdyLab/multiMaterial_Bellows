@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/EdgeTHickness_2-25.WallThickness_0-8"
 
 #-- Material definitions --
 materials = pv.default_materials()
@@ -25,7 +25,7 @@ capHeight = 2      #[mm]
 fluidPercent = 0.725
 numStacks = 3
 includeBaffles = True
-num_bellowsToPrint = 4
+num_bellowsToPrint = 1
 
 #-- placing stuff --
 x = 3.862658
@@ -106,6 +106,13 @@ if includeBaffles == True:
 else:
     fluidAir_fgrade.set_child(fluidNoHoles1_mesh)
 
+# -- Support Layers for Center Channel --
+supportLayer_H = 0.3; #[mm]
+
+supportLayer_bottomSection = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,capHeight+numStacks*mainHeight+supportCap_H/2-0.3),3.5/2,supportCap_H,green)
+
+supportLayer_TopSection = supportLayer_bottomSection
+supportLayer_TopSection = pv.Translate(0,0,1.05,supportLayer_TopSection)
 
 #--------------------------------------------------------
 #-- Repeating each Bellows Assmbly for N Bellows Stack --
@@ -127,15 +134,17 @@ for i in range(numStacks-1):
     tempBellowsMesh = pv.Translate(0,0,mainHeight*(i+1),tempBellowsMesh)
     fullStackUnion.add_child(tempBellowsMesh)
 
+fullStackUnion = pv.Difference(fullStackUnion,supportCap)
+
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
-
 # Using a temporaty union before adding to root incase of multiprint
 singleStack_Union = pv.Union()
 singleStack_Union.add_child(fullStackUnion)
 singleStack_Union.add_child(cap1fgrade)
 singleStack_Union.add_child(cap2_mesh)
+singleStack_Union.add_child(supportCap)
 
 root.add_child(singleStack_Union)
 
@@ -150,11 +159,9 @@ if num_bellowsToPrint > 1:
         tempStack = pv.Translate(60,8,0,tempStack)
         root.add_child(tempStack)
 
-       
-
 #-- Section View --
 #Bottom
 #tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
 #Side
-#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+capHeight),pv.Vec3(50,25,20),red)
-#root = pv.Difference(root,tempRect)
+tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+capHeight),pv.Vec3(50,25,20),red)
+root = pv.Difference(root,tempRect)
