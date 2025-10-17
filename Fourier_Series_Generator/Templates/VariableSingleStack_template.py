@@ -6,10 +6,10 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "../STL Files/VariableSingleStack/Diameter_25mm--WallThick_1-1mm"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Diameter_25mm--WallThick_0-8"
 
 #-- Material definitions --
-materials = pv.MaterialDefs("configs/default.json")
+materials = pv.default_materials()
 red = materials.id("red")            # Agilus
 blue = materials.id("blue")          # Vero
 liquid_mat = materials.id("liquid")  # Liquid matieral
@@ -25,7 +25,7 @@ capHeight = 1      #[mm]
 fluidPercent = 0.725
 numStacks = 3
 includeBaffles = True
-fluidPercent = 0.725
+num_bellowsToPrint = 1
 
 #-- placing stuff --
 x = 3.862658
@@ -130,10 +130,28 @@ for i in range(numStacks-1):
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
-root.add_child(fullStackUnion)
-root.add_child(cap1fgrade)
-root.add_child(cap2_mesh)
+# Using a temporaty union before adding to root incase of multiprint
+singleStack_Union = pv.Union()
+singleStack_Union.add_child(fullStackUnion)
+singleStack_Union.add_child(cap1fgrade)
+singleStack_Union.add_child(cap2_mesh)
+
+root.add_child(singleStack_Union)
+
+#---------------------------
+#-- Translation for MultiPrint
+#--------------------------------
+
+#We want to do multiprint if num_bellowsToPrint > 1
+if num_bellowsToPrint > 1:
+    tempStack  = singleStack_Union
+    for i in range(num_bellowsToPrint-1):
+        tempStack = pv.Translate(60,8,0,tempStack)
+        root.add_child(tempStack)
 
 #-- Section View --
-#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,4),red)
-#root = pv.Difference(root,tempRect)
+#Bottom
+tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
+#Side
+#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,20),red)
+root = pv.Difference(root,tempRect)

@@ -6,10 +6,10 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/Sloped_Cap_wALLtHICKNESS0-8"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/CenterSupportCollumn_2.5mmD"
 
 #-- Material definitions --
-materials = pv.default_materials()
+materials = pv.MaterialDefs("configs/default.json")
 red = materials.id("red")            # Agilus
 blue = materials.id("blue")          # Vero
 liquid_mat = materials.id("liquid")  # Liquid matieral
@@ -19,14 +19,19 @@ yellow = materials.id("yellow")      # Air
 #-- Dimensions of part --
 mainHeight = 3.5   # Dr. Mac's: 3.5[mm]
 mainD = 25         # Dr. Mac's: 25[mm]
-BottomcapHeight = 2      #[mm]
-topCapHeight = 1.2 #[mm]
+capHeight = 2      #[mm]
 
 #-- Stack Settings --
 fluidPercent = 0.725
 numStacks = 3
+num_bellowsToPrint = 4
 includeBaffles = True
-num_bellowsToPrint = 1
+
+
+centerCollumn_Dia = 2.5 #[mm]
+centerCollumn_VeroPercent = 0
+centerCollumn_SupportPercent = 1
+centerCollumn_AgilusPercent = 1 - centerCollumn_SupportPercent - centerCollumn_VeroPercent
 
 #-- placing stuff --
 x = 3.862658
@@ -78,15 +83,12 @@ cap1fgrade = pv.FGrade(["0.95", "0.05"], [blue, red], True )
 cap1fgrade.set_child(cap1_mesh)
 
 cap2_mesh = pv.Mesh(
-    STL_Location+"/slopedStart_domeCap_v2.STL",red)
-cap2_mesh = pv.Translate(-20.186845/2-.1562775,-5.2/2,-20.5/2,cap2_mesh)
-cap2_mesh = pv.Rotate(-90,0,0,pv.Vec3(0,0,0),cap2_mesh)
-cap2_mesh = pv.Translate(x+mainD/2,y+mainD/2,2.600002,cap2_mesh)
+    STL_Location+"/variableNumberBellowsStack_ASSEMBLY - domeCap-1.STL",red)
 cap2fgrade =  pv.FGrade(["0.95", "0.05"], [blue, red], True )
 cap2fgrade.set_child(cap2_mesh)
 cap2_mesh = cap2fgrade
 
-cap2_mesh = pv.Translate(0,0,numStacks*mainHeight+topCapHeight,cap2_mesh)
+cap2_mesh = pv.Translate(0,0,numStacks*mainHeight+capHeight,cap2_mesh)
 
 # -- Fluid-Solid Support Barrier --
 supportBarrier1_mesh = pv.Mesh(
@@ -110,10 +112,19 @@ if includeBaffles == True:
 else:
     fluidAir_fgrade.set_child(fluidNoHoles1_mesh)
 
-# -- Support Cap --
-supportCap_H = 0.6; #[mm]
-supportCap = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,2+numStacks*mainHeight+supportCap_H/2-0.3),3.5/2,supportCap_H,green)
 
+# -- Center Support Column -- 
+columnCenter_point = capHeight + numStacks*mainHeight/2
+CenterSupportColumn_temp = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,columnCenter_point),centerCollumn_Dia/2 ,numStacks*mainHeight)
+CenterSupportColumn = pv.FGrade([str(centerCollumn_AgilusPercent), str(centerCollumn_VeroPercent), str(centerCollumn_SupportPercent)],
+                                [red, blue,green], True)
+
+
+CenterSupportColumn.set_child(CenterSupportColumn_temp)
+
+#Removing center part of the baffles "part"
+
+bafflesFgrade = pv.Difference(bafflesFgrade,CenterSupportColumn)
 
 #--------------------------------------------------------
 #-- Repeating each Bellows Assmbly for N Bellows Stack --
@@ -135,8 +146,6 @@ for i in range(numStacks-1):
     tempBellowsMesh = pv.Translate(0,0,mainHeight*(i+1),tempBellowsMesh)
     fullStackUnion.add_child(tempBellowsMesh)
 
-fullStackUnion = pv.Difference(fullStackUnion,supportCap)
-
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
@@ -145,7 +154,7 @@ singleStack_Union = pv.Union()
 singleStack_Union.add_child(fullStackUnion)
 singleStack_Union.add_child(cap1fgrade)
 singleStack_Union.add_child(cap2_mesh)
-singleStack_Union.add_child(supportCap)
+singleStack_Union.add_child(CenterSupportColumn)
 
 root.add_child(singleStack_Union)
 
@@ -162,7 +171,7 @@ if num_bellowsToPrint > 1:
 
 #-- Section View --
 #Bottom
-tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
+#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
 #Side
-#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,20),red)
-root = pv.Difference(root,tempRect)
+#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+capHeight),pv.Vec3(50,25,20),red)
+#root = pv.Difference(root,tempRect)

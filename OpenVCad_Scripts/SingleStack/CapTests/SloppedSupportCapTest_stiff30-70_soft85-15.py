@@ -26,7 +26,7 @@ topCapHeight = 1.2 #[mm]
 fluidPercent = 0.725
 numStacks = 3
 includeBaffles = True
-num_bellowsToPrint = 4
+num_bellowsToPrint = 1
 
 #-- placing stuff --
 x = 3.862658
@@ -164,5 +164,5 @@ if num_bellowsToPrint > 1:
 #Bottom
 #tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
 #Side
-#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,20),red)
-#root = pv.Difference(root,tempRect)
+tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,40),red)
+root = pv.Difference(root,tempRect)
