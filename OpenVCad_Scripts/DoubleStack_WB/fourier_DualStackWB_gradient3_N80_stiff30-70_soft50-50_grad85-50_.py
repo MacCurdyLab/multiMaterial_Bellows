@@ -12,9 +12,9 @@ import pyvcad as pv
 # N (number of Fourier modes) = 80,  L = 15
 
 #STL Files Location
-stl_Location = "MAC_LAB/STL Files/DualWithBaffles_Intersection"
+stl_Location = "MAC_LAB/STL Files/DualWithBaffles"
 
-materials = pv.MaterialDefs("configs/default.json")
+materials = pv.default_materials()
 red = materials.id("red")  # Agilus
 blue = materials.id("blue")  # Vero
 liquid_mat = materials.id("liquid")  # Liquid matieral
@@ -23,7 +23,7 @@ liquid_mat = materials.id("liquid")  # Liquid matieral
 green = materials.id("green")
 
 liquid_mesh = pv.Mesh(
-    stl_Location+"/AssemblyWithBaffles_usingIntersection - VCADTrialAssembly-1 HousingLiquidNB-1.STL", liquid_mat)
+    stl_Location+"/Variable_AssemblyWithBaffles_usingIntersection - VCADTrialAssembly-1 HousingLiquidNB-1.STL", liquid_mat)
 baffles_mesh = pv.Mesh(
     stl_Location+"/AssemblyWithBaffles_usingIntersection - VCADTrialAssembly-1 HousingLiquidWBAssem..Part2^HousingLiquidWBAssemblyVCADTRIAL-1.STL", green
 )

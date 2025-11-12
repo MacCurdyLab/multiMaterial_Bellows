@@ -16,10 +16,10 @@ import pyvcad as pv
 #----------------------
 
 # -- STL Files Location --
-stl_Location = "MAC_LAB/STL Files/DualWithBaffles_Intersection"
+stl_Location = "MAC_LAB/STL Files/DualWithBaffles/DualWithBaffles_Intersection"
 
 # -- Materials --
-materials = pv.MaterialDefs("configs/default.json")
+materials = pv.default_materials()
 red = materials.id("red")            # Agilus
 blue = materials.id("blue")          # Vero
 liquid_mat = materials.id("liquid")  # Liquid matieral
