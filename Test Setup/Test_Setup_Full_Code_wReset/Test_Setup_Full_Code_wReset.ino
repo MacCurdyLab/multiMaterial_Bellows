@@ -53,7 +53,8 @@ uint16_t fileIndex = 1;
 char currentFilename[20];
 
 const uint8_t sensorPins[4] = { A0, A1, A2, A3 };
-const int threshold = 725; // originally 512
+const int threshold[4] = {725, 840,725,725}; // originally 512
+uint8_t currState;
 uint8_t prevState[4] = { 0, 0, 0, 0 };
 uint32_t pressCount[4] = { 0, 0, 0, 0 };
 
@@ -196,11 +197,11 @@ void loop() {
         analogWrite(LPWM_PIN, 0);
       }
       // debug
-      Serial.print("RPM: "); Serial.print(rpm);
+      //Serial.print("RPM: "); Serial.print(rpm);
       //Serial.print(",");
-      Serial.print("  Err: "); Serial.print(error);
+      //Serial.print("  Err: "); Serial.print(error);
       //Serial.print(",");
-      Serial.print("  PWM: "); Serial.println(pwm);
+      //Serial.print("  PWM: "); Serial.println(pwm);
       //Serial.print(",");
 
       lcd.setCursor(0,0);
@@ -239,14 +240,23 @@ void loop() {
   // 4) Sensor reading & SD logging on each rising edge
   for (uint8_t i = 0; i < 4; i++) {
     int v = analogRead(sensorPins[i]);
-    // Serial.print("Sensor "); Serial.print(i); Serial.print(": "); Serial.println(v);
-    uint8_t currState = (v > threshold) ? 1 : 0;
+    
+    if(v < threshold[i]){
+      currState= 1;
+    }else{
+      currState = 0;
+    }
+    
     if (currState && !prevState[i]) {
       pressCount[i]++;
       lastPressEpoch = currentEpoch;
+      Serial.print("HEY");
       
     }
+    Serial.print("Sensor "); Serial.print(i); Serial.print(": "); Serial.println(v);
+    
     prevState[i] = currState;
+    //delay(100);
   }
 
   if (RECORD_INTERRVAL_MS < m - LAST_RECORD_TIME_MS){
@@ -281,12 +291,12 @@ void loop() {
   //lcd.print(now.second());
 
   lcd.setCursor(0, 1);
-  lcd.print("S1:"); lcd.print(pressCount[0]);
-  lcd.print("  S2:"); lcd.print(pressCount[1]);
+  lcd.print("S0:"); lcd.print(pressCount[0]);
+  lcd.print("  S1:"); lcd.print(pressCount[1]);
 
   lcd.setCursor(0, 2);
-  lcd.print("S3:"); lcd.print(pressCount[2]);
-  lcd.print("  S4:"); lcd.print(pressCount[3]);
+  lcd.print("S2:"); lcd.print(pressCount[2]);
+  lcd.print("  S3:"); lcd.print(pressCount[3]);
 
    
   printFilenameToLCD();
