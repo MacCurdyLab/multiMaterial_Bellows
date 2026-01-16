@@ -43,7 +43,7 @@ outerBellows_inside_sketch= (
 
 #now create entire bellows sketch
 outerBellows_sketch = cq.Workplane().add(outerBellows_inside_sketch.wires())
-"""outerBellows_sketch = (outerBellows_sketch
+outerBellows_sketch = (outerBellows_sketch
                        .lineTo(total_R,total_H/2)
                        .lineTo(total_R,total_H/2-edge_H+fillet_R2)
                        .radiusArc((total_R-fillet_R2,total_H/2-edge_H),+fillet_R2)
@@ -53,7 +53,7 @@ outerBellows_sketch = cq.Workplane().add(outerBellows_inside_sketch.wires())
                        .lineTo(pipe_ID/2,0)
                        
                        )
-"""
+
 
 #just for debugging to show me where my selection is
 
@@ -110,7 +110,7 @@ bellows = bellowsBottom.union(bellowsTop)
 # the bellows sketch, then translate that into position and revolve to get the support
 supportHousing_sketch = (outerBellows_inside_sketch
                          .offset2D(vero_thick,'arc')
-                         .edges("not (<Y or >X)")
+                            .edges("not (<Y or >X)")
                          )
 
 #-------------------------------------

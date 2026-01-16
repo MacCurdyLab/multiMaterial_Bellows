@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableSingleStack/VeroLayer_0.3mm"
+STL_Location = "MAC_LAB/STL Files/VariableSingleStack/VeroLayer_0.2mm"
 
 #-- Material definitions --
 materials = pv.default_materials()
