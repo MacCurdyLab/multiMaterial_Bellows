@@ -28,13 +28,14 @@ gradientText = "bellow_materialGradient.txt" #Name of material gradient text fil
 #Render Settings
 createBellowSTL = False #Whether to create new STL file of a half Bellow stack
 createGradientFunction = False #Whether to create a .txt file containing bellow material gradient
+showVCAD = True 
 
 #Bellows Geometry Parameters
-a = 0.4 #edge thickness [mm]
-b = 0.5 #edge height [mm]
-c = 0.4 #pipe radius [mm]
+a = 2.25 #edge thickness [mm]
+b = 0.75 #edge height [mm]
+c = 1.75 #pipe radius [mm]
 d = 5.06 #wall angle [deg]
-e = 6.0 #total radius [mm]
+e = 12.5 #total radius [mm]
 
 
 supportLayer_thickness = 0.2 #thickness of the support layer between the fluid and shell        
@@ -153,8 +154,9 @@ fluidAir_fgrade = pv.FGrade([str(fluidPercent),str(1-fluidPercent)],[liquid_mat,
 
 if includeBaffles == True:
     fluidHoles1_mesh = pv.Mesh(
-        STL_Location + fluidWithHoles_file, liquid_mat
+        STL_Location + fluidWithHoles_file, liquid_mat, True
     )
+
     baffles = pv.Difference(fluidNoHoles1_mesh, fluidHoles1_mesh)
     bafflesFgrade = pv.FGrade(['1'], [green], True) #defaults to first material defined so need to redefine mat
     bafflesFgrade.set_child(baffles)
@@ -218,4 +220,6 @@ if num_bellowsToPrint > 1:
 #--------------------------------------
 #-- VCAD Rendering --------------------
 #--------------------------------------
-viz.Render(root, materials, use_darkmode = True)
+if showVCAD == True: viz.Render(root, materials)
+
+viz.export(root,materials)

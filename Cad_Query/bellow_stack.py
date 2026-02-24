@@ -257,7 +257,7 @@ class bellow_stack:
     #-------------------------------------------------
     def STL_export(self):
         self.fluid_object.export(self.saveDirectory+"fluid.stl")
-        self.shell_object.export(self.saveDirectory+"shell.stl")
+        self.shell_object.export(self.saveDirectory+"shell.step")
         self.supportLayer_object.export(self.saveDirectory+"supportLayer.stl")
         if self.includeVeroKeepOut == True: self.veroKeepOut_object.export(self.saveDirectory+"veroKeepOut.stl")
         if self.includeBaffles == True: self.fluidHoles_object.export(self.saveDirectory+"fluid_with_holes.stl")
