@@ -1,6 +1,8 @@
 # Test Bench Tutorial
 The primary goal of the test bench is to run compression-extensions cycles on sets of bellows until failure to quantify the effectiveness of different bellow designs. The test bench consists of a DC motor connected to a crank shaft with a set of four followers. A set of bellows is loaded in under each follower, and when a follower is pushed downwards by the crankshaft a limit switch connected to the other side of the bellows set is pressed. Once a bellows set is ruptured it will no longer actuate the limit switch and the counter will stop.
 
+The Test Bench is powered by an Arduino Mega microcontroler. All software for the test bench is written using the Arduino IDE and the most up to date software is [Test_Setup_Full_Code_wReset.ino](../Test%Setup%Full%Code%wReset/Test%Setup%Full%Code%wReset.ino)
+
 ### CAD Model:
 ![testBenchCAD](../Pictures/CyclicLoader.png)
 
