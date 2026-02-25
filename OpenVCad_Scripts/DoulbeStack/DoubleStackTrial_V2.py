@@ -6,7 +6,7 @@ import pyvcad as pv
 #----------------------
 
 #-- STL File Directory --
-STL_Location = "MAC_LAB/STL Files/VariableDualStack/UpdatedSTLs_V2"
+STL_Location = "C:/Users/andre/OneDrive/Documents/SOLIDWORKS/Variable Bellows/10.31_DoubleStack_Variable_Bellows/DualStack_STLs"
 
 #-- Material definitions --
 materials = pv.default_materials()
@@ -15,7 +15,7 @@ blue = materials.id("blue")          # Vero
 liquid_mat = materials.id("liquid")  # Liquid matieral
 green = materials.id("green")        # Support
 yellow = materials.id("yellow")      # Air
- 
+
 #-- Dimensions of part --
 mainHeight = 3.5   # Dr. Mac's: 3.5[mm]
 mainD = 25         # Dr. Mac's: 25[mm]
