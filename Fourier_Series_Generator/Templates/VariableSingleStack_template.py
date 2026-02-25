@@ -19,7 +19,8 @@ yellow = materials.id("yellow")      # Air
 #-- Dimensions of part --
 mainHeight = 3.5   # Dr. Mac's: 3.5[mm]
 mainD = 25         # Dr. Mac's: 25[mm]
-capHeight = 1      #[mm]
+BottomcapHeight = 1      #[mm]
+topCapHeight = 1.2 #[mm]
 
 #-- Stack Settings --
 fluidPercent = 0.725
@@ -28,8 +29,8 @@ includeBaffles = True
 num_bellowsToPrint = 1
 
 #-- placing stuff --
-x = 3.862658
-y = 3.861415
+x = 0
+y = 0
 z = 0
 
 #-- Defining Root Node --
@@ -70,23 +71,28 @@ bellows_fgrade.set_child(bellows1)
 bellows_fgrade = pv.Translate(x+mainD/2, y+mainD/2, 0, bellows_fgrade)
 
 
-# -- Caps --
+# -- Bottom Cap --
 cap1_mesh = pv.Mesh(
     STL_Location + "/variableNumberBellowsStack_ASSEMBLY - CloseCap-1.STL",red)
 cap1fgrade = pv.FGrade(["0.95", "0.05"], [blue, red], True )
 cap1fgrade.set_child(cap1_mesh)
 
+#-- Top Cap -- 
 cap2_mesh = pv.Mesh(
-    STL_Location+"/variableNumberBellowsStack_ASSEMBLY - domeCap-1.STL",red)
+    STL_Location+"/variableNumberBellowsStack_ASSEMBLY - slopedStart_domeCap-1.STL",red)
+cap2_mesh = pv.Translate(0,0,numStacks*mainHeight+BottomcapHeight,cap2_mesh)
 cap2fgrade =  pv.FGrade(["0.95", "0.05"], [blue, red], True )
 cap2fgrade.set_child(cap2_mesh)
 cap2_mesh = cap2fgrade
 
-cap2_mesh = pv.Translate(0,0,numStacks*mainHeight+capHeight,cap2_mesh)
-
 # -- Fluid-Solid Support Barrier --
 supportBarrier1_mesh = pv.Mesh(
     STL_Location + "/variableNumberBellowsStack_ASSEMBLY - Variable_SupportBundary-1.STL",green
+)
+
+# -- Fluid-Solid Vero Barrier --
+supportBarrier2_mesh = pv.Mesh(
+    STL_Location + "/variableNumberBellowsStack_ASSEMBLY - Variable_VeroBundary-1.STL", blue
 )
 
 # -- Baffles and Fluid --
@@ -106,14 +112,18 @@ if includeBaffles == True:
 else:
     fluidAir_fgrade.set_child(fluidNoHoles1_mesh)
 
+# -- Support Cap --
+supportCap_H = 0.6; #[mm]
+supportCap = pv.Cylinder(pv.Vec3(x+mainD/2,y+mainD/2,2+numStacks*mainHeight+supportCap_H/2+.527),3.5/2,supportCap_H,green)
 
 #--------------------------------------------------------
 #-- Repeating each Bellows Assmbly for N Bellows Stack --
 #--------------------------------------------------------
 repeatUnion = pv.Union()
-repeatUnion.add_child(bellows_fgrade)
-repeatUnion.add_child(supportBarrier1_mesh)
-repeatUnion.add_child(fluidAir_fgrade)
+repeatUnion.add_child(bellows_fgrade)         # Bellows Housing
+repeatUnion.add_child(supportBarrier1_mesh)   #705FullCure Support Layer
+repeatUnion.add_child(fluidAir_fgrade)        #Fluid
+repeatUnion.add_child(supportBarrier2_mesh)   #Vero Support Layer
 
 if includeBaffles == True:
     repeatUnion.add_child(bafflesFgrade)
@@ -127,6 +137,8 @@ for i in range(numStacks-1):
     tempBellowsMesh = pv.Translate(0,0,mainHeight*(i+1),tempBellowsMesh)
     fullStackUnion.add_child(tempBellowsMesh)
 
+fullStackUnion = pv.Difference(fullStackUnion,supportCap)
+
 #--------------------------------------
 #-- Union of all Meshes to Root Node --
 #--------------------------------------
@@ -135,6 +147,7 @@ singleStack_Union = pv.Union()
 singleStack_Union.add_child(fullStackUnion)
 singleStack_Union.add_child(cap1fgrade)
 singleStack_Union.add_child(cap2_mesh)
+singleStack_Union.add_child(supportCap)
 
 root.add_child(singleStack_Union)
 
@@ -150,8 +163,9 @@ if num_bellowsToPrint > 1:
         root.add_child(tempStack)
 
 #-- Section View --
+#you can uncomment these to get side views of the individual bellows
 #Bottom
-tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
+#tempRect = pv.RectPrism(pv.Vec3(x+mainD/2,y+mainD/2,0),pv.Vec3(mainD,mainD,8),red)
 #Side
-#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,20),red)
-root = pv.Difference(root,tempRect)
+#tempRect = pv.RectPrism(pv.Vec3(x,y,(numStacks*mainHeight)/2+topCapHeight),pv.Vec3(50,25,40),red)
+#root = pv.Difference(root,tempRect)

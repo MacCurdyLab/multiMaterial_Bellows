@@ -1,6 +1,7 @@
-#----------------------------
+#-----------------------------------------------
 #Main script for computational bellows rendering
-#----------------------------
+#----------------------------------------------
+#Initially writen by Andrew Heck (andrewlheck@yahoo.com) at MACLab at 
 
 #to activate environment: .\MACPY\Scripts\activate
 
